@@ -5,5 +5,6 @@
 
 char *readLine(FILE *stream);
 char **parser(char *string);
+void destroyCommand(char *args[]);
 
 #endif

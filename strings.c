@@ -7,8 +7,7 @@
 /* ----------------------------------------------- */
 /* LE UMA LINHA DA ENTRADA ESPECIFICADA EM *stream */
 /* ----------------------------------------------- */
-char *readLine(FILE *stream)
-{
+char *readLine(FILE *stream) {
 	char *string = malloc(LINE_LENGTH);
 	unsigned int i = 0, length = LINE_LENGTH;
 	int input = 0;
@@ -31,10 +30,24 @@ char *readLine(FILE *stream)
 		return realloc(string, i + 1); // realoca para o tamanho correto e retorna
 }
 
+/* ----------------------------------- */
+/* LIMPA A ENTRADA DO COMANDO ANTERIOR */
+/* ----------------------------------- */
+void destroyCommand(char *args[]) {
+	unsigned int i = 0;
+
+	while (args[i] != NULL) {
+		free(args[i]);
+		i++;
+	}
+//	free(args);
+}
+
 /* ------------------------------------------------------------- */
 /* SEPARA A LINHA DE COMANDO LIDA EM TOKENS SEPARADOS POR ESPACO */
 /* ------------------------------------------------------------- */
 char **parser(char *string) {
+	printf("vai entrar no parser\n");
 	char **args = malloc(((strlen(string) / 2) + 2) * sizeof (char *)),
 	     *token = strtok(string, " ");
 	unsigned int i = 0;
