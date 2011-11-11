@@ -28,17 +28,19 @@ void launchJob(char *command[], char *file, int newDescriptor, int executionMode
 
 	       INICIO TESTES
 	       */
-
+	       signal(SIGINT, SIG_DFL);
+	       signal(SIGQUIT, SIG_DFL);
+	       signal(SIGTSTP, SIG_DFL);
 	       signal(SIGCHLD, &signalChildHandler); // desvia o sinal do processo filho
+	       signal(SIGTTIN, SIG_DFL);
 	       usleep(20000);
 	       setpgrp(); //?
-	       if (executionMode == FOREGROUND)
-		       tcsetpgrp(SHELL_TERMINAL, getpid());
+	       if (executionMode == FOREGROUND) // EXAMINAR AQUI
+		       tcsetpgrp(SHELL_TERMINAL, getpid()); // getpid retornara o pid do processo filho e este sera colocado em foreground pelo tcsetpgrp
 	       if (executionMode == BACKGROUND)
 		       printf("[%d] NUMERO DO PROCESSO\n", ++numActiveJobs);
 
 	       executeCommand(command, file, newDescriptor, executionMode);
-printf("vai sair...\n");
 	       exit(EXIT_SUCCESS);
        }
        else {
@@ -60,14 +62,14 @@ printf("vai sair...\n");
 }
 
 void putJobForeground(typeJob *job, int continueJob) {
-	job->status = FOREGROUND;
-	tcsetpgrp(SHELL_TERMINAL, job->pgid);
+	job->status = FOREGROUND; // E AQUI
+	tcsetpgrp(SHELL_TERMINAL, job->pgid); // pega o processo (job->pgid) associado a SHELL_TERMINAL e o coloca em foreground
 	if (continueJob)
 		if (kill(-job->pgid, SIGCONT) < 0)
 			perror("kill (SIGCONT)");
 
 	waitJob(job);
-	tcsetpgrp(SHELL_TERMINAL, SHELL_PGID);
+	tcsetpgrp(SHELL_TERMINAL, SHELL_PGID); // coloca o shell em foreground
 }
 
 void putJobBackground(typeJob *job, int continueJob) {
@@ -89,6 +91,7 @@ void waitJob(typeJob *job) {
 	while (waitpid(job->pid, &terminationStatus, WNOHANG) == 0)
 		if (job->status == SUSPENDED)
 			return;
+
 	jobsList = delJob(job);
 }
 

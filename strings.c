@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define LINE_LENGTH 512
-
+#include<errno.h>
 /* ----------------------------------------------- */
 /* LE UMA LINHA DA ENTRADA ESPECIFICADA EM *stream */
 /* ----------------------------------------------- */
@@ -14,6 +14,7 @@ char *readLine(FILE *stream) {
 
 	while ((input = fgetc(stream)) != '\n') {
 		if (input == EOF) {
+			printf("Error: %s\n", strerror(errno));
 			fprintf(stderr, "\n\nErro de leitura. Abortando.");
 			exit(EXIT_FAILURE);
 		}
@@ -40,14 +41,13 @@ void destroyCommand(char *args[]) {
 		free(args[i]);
 		i++;
 	}
-//	free(args);
+	free(args);
 }
 
 /* ------------------------------------------------------------- */
 /* SEPARA A LINHA DE COMANDO LIDA EM TOKENS SEPARADOS POR ESPACO */
 /* ------------------------------------------------------------- */
 char **parser(char *string) {
-	printf("vai entrar no parser\n");
 	char **args = malloc(((strlen(string) / 2) + 2) * sizeof (char *)),
 	     *token = strtok(string, " ");
 	unsigned int i = 0;

@@ -55,6 +55,11 @@ void initialize() {
 		while (tcgetpgrp(SHELL_TERMINAL) != (SHELL_PGID = getpgrp()))
 			kill(SHELL_PID, SIGTTIN);
 
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGTTOU, SIG_IGN);
+		signal(SIGTTIN, SIG_IGN);
+		signal(SIGTSTP, SIG_IGN);
+		signal(SIGINT, SIG_IGN);
 		signal(SIGCHLD, &signalChildHandler);
 
 		setpgid(SHELL_PID, SHELL_PID);
@@ -84,6 +89,10 @@ int main(void) {
 
 		handleCommand(argv);
 		destroyCommand(argv);
+		if (tcgetpgrp(SHELL_TERMINAL) != SHELL_PGID) {
+			printf("SHELL_TERMINAL != SHELL_PGID. SETANDO.\n");
+			tcsetpgrp(SHELL_TERMINAL, SHELL_PGID);
+		}
 		shellPrompt();
 	}
 
