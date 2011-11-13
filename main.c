@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static pid_t SHELL_PID;
-static pid_t SHELL_PGID;
+pid_t SHELL_PID;
+pid_t SHELL_PGID;
 
 int terminationStatus;
 

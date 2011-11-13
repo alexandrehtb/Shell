@@ -38,7 +38,7 @@ void initializeSignals(void) {
 
 void TSTP_Handler(int signal, siginfo_t *info, void *context) {
 	typeJob *job = getJob(FOREGROUND, BY_JOB_STATUS);
-
+	printf("%s\n", job->name);
 	if (job == NULL)
 		return;
 	else {
