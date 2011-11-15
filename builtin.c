@@ -1,4 +1,5 @@
 #include "builtin.h"
+#include "jobs.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,8 +17,10 @@ int builtInCommand(char **argv) {
 		my_exit();
 	if (strcmp(argv[0], "cd") == 0)
 		return changeDirectory(argv);
-	if (strcmp(argv[0], "jobs") == 0)
-		return printJobs(argv);
+	if (strcmp(argv[0], "jobs") == 0) {
+		printJobs();
+		return 1;
+	}
 	if (strcmp(argv[0], "bg") == 0)
 		return bg(argv);
 	if (strcmp(argv[0], "fg") == 0)
@@ -43,10 +46,12 @@ int changeDirectory(char *argv[]) {
 
 	return 1;
 }
-
+/*
 int printJobs(char *argv[]) {
+	printJobs();
 	return 1;
 }
+*/
 
 int bg(char *argv[]) {
 	return 1;

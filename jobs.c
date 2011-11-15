@@ -142,4 +142,12 @@ int changeJobStatus(int pid, int status) {
  * Espera pelo termino de uma job.
  */
 
-
+void printJobs() {
+	typeJob *job = jobsList;
+	if (job != NULL) {
+		while (job != NULL) {
+			printf("[%d]+%2s%18c%30s\n", job->id, "", job->status, job->name);
+			job = job->next;
+		}
+	}
+}

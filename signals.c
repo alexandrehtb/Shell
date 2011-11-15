@@ -15,7 +15,7 @@ static struct sigaction oldact_CHLD;
 extern int terminationStatus;
 extern pid_t SHELL_PID;
 
-/**
+/**askdj
  * Redireciona os sinais TSTP e CHLD para as respectivas funcoes
  * que irao trata-los.
  */
