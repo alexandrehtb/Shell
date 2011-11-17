@@ -1,0 +1,62 @@
+==========================================================
+
+REAMDE: Trabalho final de SO 2: Shell
+
+==========================================================
+
+Grupo:
+	Bruna Toledo Garcia		 N USP - 6792760
+	Alexandre H T Bonicelli		 N USP - 6792986
+
+==========================================================
+
+1. Introducao
+
+	Como trabalho final da disciplica de SO 2, foi implementada uma
+shell com as seguintes caracteristicas:
+	- Controle de jobs
+	- Possibilidade de trocar estados das jobs (foreground e background)
+	- Execucao de comandos built in
+	- Execucao de comandos nao built in
+
+	O controle de jobs foi implementado de forma que uma struct, denominada
+job, contem os elementos necessarios para se identificar e manipular uma job:
+pid, controle de foreground e status, alem de um ponteiro para uma proxima
+struct, gerando assim uma lista de jobs.
+
+	Ao executar a shell, ela entra em loop aguardando um comando do usuario.
+Assim que o comando eh digitado ela faz uma verificacao se ele eh um built-in ou nao.
+Se for verifica qual e executa as rotinas necessarias. Senao, eh criado uma job
+para que o este seja executado. Na rotina de criacao da job, eh feito um fork
+do processo corrente. Feito isso, o processo filho ira chamar um procedimento
+que cuidara da execucao do comando com a rotina execvp(). Enquanto isso,
+no processo pai, eh feita uma verificacao se a job deve ser colocada em foreground
+ou background. Caso seja em foreground, o processo pai espera por uma mudanca de
+estado do processo filho pela rotina watpid(), caso contrario eh setada uma flag
+para que ela va para background e o processo pai retorna a sua execucao normal.
+
+	O controle de sinais que garante este funcionamento foi implementado
+com o uso da funcao sigaction(), redirecionando os sinais recebidos para as
+devidas funcoes que deveriam controla-los. Estas fazem as devidas alteracoes
+nas flags das jobs e e fato enviam os sinais para as mesmas com o comando
+kill().
+
+2. Caracteristicas
+
+	Foram implementados os controles de jobs, os comandos built-in e nao built-in,
+controle de estados das jobs com possibilidades de mudar foreground e background e
+controle de sinais.
+	Como comandos built-in temos o cd (mudar para o diretorio especificado ou
+para o HOME caso nao seja especificado um argumento), fg (colocar job especificada
+em foreground), bg (colocar job especificada em background) e jobs (imprime
+as jobs correntes, seus ids, e respectivos status).
+	Nao houve tempo para implementar o redirecionamento de entrada e saida
+e o controle de pipes.
+
+3. Testes
+
+	O programa foi testado de forma a executarmos todas as funcionalidades
+implementadas. Foram feitos testes para o gerenciamento das jobs atraves
+da listagem das mesmas e do uso dos comandos fg e bg.
+	Foram testados os comandos built-in implementados e o comportamento
+da mesma com comandos nao built-in como o xeyes.
